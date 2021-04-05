@@ -9,6 +9,7 @@ using namespace std;
 class FCFS: public Scheduler {
 
 public:
+    //doesn't use priortiy, should use arrival time to arrange order of processing instead of just numbering
     // function to calculate average time
     static void FCFSCalc(Scheduler &subj) {
 
