@@ -97,8 +97,8 @@ struct Process {
         return priority;
     }
 
-    void setPriority(int priority) {
-        Process::priority = priority;
+    void setPriority(int pri) {
+        priority = pri;
     }
 };
 

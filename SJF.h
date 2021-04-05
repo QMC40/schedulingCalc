@@ -33,6 +33,9 @@ public:
 
         // function to find turn around time for all processQueue
         subj.findTurnAroundTime();
+
+        cout << "*****Shortest Job First*****\n";
+        subj.displayResults();
     }
 };
 

@@ -26,7 +26,7 @@ public:
                 break;
             }
             case 3: {
-                SRTF::SJFCalc(subj);
+                SRTF::SRTFCalc(subj);
                 break;
             }
 //        case 4:

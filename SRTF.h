@@ -13,26 +13,26 @@ class SRTF : Scheduler {
 
 private:
     // comparison method for processQueue by burst time
-    static bool compare (Process a, Process b) {
+    static bool compare(Process a, Process b) {
         return a.getBurstTime() < b.getBurstTime();
     }
 
 public:
-    static void SJFCalc(Scheduler &subj) {
+    static void SRTFCalc(Scheduler &subj) {
 
         // const for CPU cycle units
         const double interval = 1;
 
         // calc total run time of all processes
         double totalRunTime = 0;
-        for(auto procTime : subj.processQueue.processes) {
+        for (auto procTime : subj.processQueue.processes) {
             totalRunTime += procTime.getBurstTime();
         }
 
         double remaining = 0;
 
-//        while(true) {
-        while(totalRunTime != 0) {
+        double clock = 0;
+        while (clock != totalRunTime) {
 
             // sorting processQueue by burst time.
             sort(subj.processQueue.processes.begin(), subj.processQueue.processes.end(), compare);
@@ -41,20 +41,33 @@ public:
             remaining = subj.processQueue.processes.front().getBurstRemaining();
             subj.processQueue.processes.front().setBurstRemaining(remaining - interval);
             totalRunTime -= interval;
+            if (subj.processQueue.processes.front().getBurstRemaining() == 0) {
+                subj.processQueue.processes.front().setCompletionTime(clock);
+            }
         }
-//        cout << "*****Shortest Job First*****\n"
-//                "Order in which processes get executed: ";
-//        auto itr = subj.processQueue.processes.begin();
-//        for (; itr != subj.processQueue.processes.end(); itr++) {
-//            cout << itr->getPid() << " ";
-//        }
-//        cout << endl;
 
-            // function to find waiting time of all processQueue
-            subj.findWaitingTime();
+        // calculating turnaround time by subtracting arrival time from completion time
+        for (auto &itr : subj.processQueue.processes) {
+            itr.setTurnaroundTime(itr.getCompletionTime() - itr.getArrivalTime());
+        }
 
-            // function to find turn around time for all processQueue
-            subj.findTurnAroundTime();
+        // calculate waiting time by subtracting burst time from turnaround time
+        for (auto &itr : subj.processQueue.processes) {
+            itr.setWaitingTime(itr.getTurnaroundTime() - itr.getBurstTime());
+        }
+
+        // display processQueue along with all details
+        double total_wt = 0, total_tt = 0;
+        // calculate total waiting time and total turn around time
+        for (auto &i : subj.processQueue.processes) {
+            total_wt += i.getWaitingTime();
+            total_tt += i.getTurnaroundTime();
+            printf("Process %d : Burst time: %.1f Waiting time: %.1f Turn around time: %.1f\n",
+                   i.getPid(), i.getBurstTime(), i.getWaitingTime(), i.getTurnaroundTime());
+        }
+
+        cout << "Average waiting time = " << total_wt / subj.processQueue.processes.size();
+        cout << "\nAverage turn around time = " << total_tt / subj.processQueue.processes.size();
     }
 
 //    void static SRTFCalc1() {
